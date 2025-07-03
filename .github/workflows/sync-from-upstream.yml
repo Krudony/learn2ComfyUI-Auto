@@ -1,0 +1,30 @@
+name: Sync from Upstream
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # รันทุกวันตอนตี 2 (UTC)
+  workflow_dispatch:      # อนุญาตให้กดรันเองได้
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout your repo
+        uses: actions/checkout@v3
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+
+      - name: Add upstream repo
+        run: |
+          git remote add upstream https://github.com/gordon123/learn2ComfyUI
+          git fetch upstream
+
+      - name: Merge upstream changes
+        run: |
+          git merge upstream/main --allow-unrelated-histories -m "Sync from upstream"
+
+      - name: Push changes
+        run: git push origin main
